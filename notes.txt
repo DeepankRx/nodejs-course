@@ -1,0 +1,12 @@
+to initialize a backend project -> npm init
+package/library -> npm install <package name> install ->i
+to start a project -> add script
+  "start":"node server.js",
+start doesn't require "run" but all other need run
+example:
+runServer
+npm run runServer
+
+nodemon
+-g globally install
+ex :  npm i -g nodemon
