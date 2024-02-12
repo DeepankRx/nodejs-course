@@ -1,18 +1,5 @@
-day2
-get/delete -> we cann't send body in this request
+find -> return an array
+findById -> object
+CRUD -> Create,Read,Update,Delete
 
-post/put -> we can send body in these requests
-
-body ->
-params ->
-query ->
-headers ->
-
-// sql -> mongodb(nosql)
-// row -> document
-//table -> collection
-
-
-database -> connection
-tables -> collection
-structure ->  schema
+model -> controller -> routes -> main(server.js)(import)

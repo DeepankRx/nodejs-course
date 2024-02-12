@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 //  1. Create an instance of the Express application
 const app = express();
 
-const port = 3000;
+const port = 3001;
 
 //method to run server
 app.listen(port, () => {
@@ -33,16 +33,23 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   name: String,
+  city: {
+    default: 'Aligarh',
+    type: String,
+  },
 });
 // ('table name',structureOfTable)
 const User = mongoose.model('user', userSchema);
-
+app.use((req, res, next) => {
+  console.log('middleware');
+  next();
+});
 app.use(express.json());
-
 app.post('/create', async (request, response) => {
   try {
-    const usr = request.body.username;
-    const psd = request.body.password;
+    // const usr = request.body.username;
+    // const psd = request.body.password;
+    const { username: usr, password: psd, city } = request.body;
     if (!usr) {
       return response.status(400).json({ message: 'Please enter username' });
     }
@@ -57,8 +64,9 @@ app.post('/create', async (request, response) => {
     const user = await User.create({
       username: usr,
       password: psd,
+      city,
     });
-    
+
     return response.status(200).json({ message: 'User created', data: user });
   } catch (error) {
     return response.status(500).json({
@@ -68,9 +76,13 @@ app.post('/create', async (request, response) => {
   }
 });
 
-app.get('/all', (req, res) => {
+app.get('/all', async (req, res) => {
   try {
-    return res.status(200).json(users);
+    const users = await User.find();
+    return res.status(200).json({
+      message: 'Users fetched successfully!',
+      data: users,
+    });
   } catch (error) {
     return response.status(500).json({
       message: 'Something went wrong',
@@ -163,4 +175,85 @@ app.get('/header', (req, res) => {
       error: error.message,
     });
   }
+});
+
+app.get('/user/condition', async (req, res) => {
+  const condition = req.query;
+  // const { username } = req.body;
+  // if (!username) {
+  //   return res.status(400).json({
+  //     message: 'Please enter username',
+  //   });
+  // }
+  console.log(req.query);
+  const users = await User.find(condition);
+  if (users.length === 0) {
+    return res.status(400).json({
+      message: 'No user found',
+    });
+  }
+  return res.status(200).json({
+    data: users,
+  });
+});
+
+app.get('/user/:id', async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  return res.status(200).json({
+    data: user,
+  });
+});
+app.get('/user/one/:city', async (req, res) => {
+  const { city } = req.params;
+  const user = await User.findOne({
+    city,
+  });
+  return res.status(200).json({
+    data: user,
+  });
+});
+app.put('/user/update/:city', async (req, res) => {
+  const { city } = req.params;
+  const { username } = req.body;
+  const user = await User.findOneAndUpdate(
+    {
+      city,
+    },
+    {
+      username,
+    },
+    {
+      new: true,
+    }
+  );
+  return res.status(200).json({
+    data: user,
+  });
+});
+// app.put('/user/update/:city', async (req, res) => {
+//   const { city } = req.params;
+//   const { username } = req.body;
+//   const user = await User.findByIdAndUpdate(
+//     {
+//       city,
+//     },
+//     {
+//       username,
+//     },
+//     {
+//       new: true,
+//     }
+//   );
+//   return res.status(200).json({
+//     data: user,
+//   });
+// });
+
+app.delete('/user/delete/:id', async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findByIdAndDelete(id);
+  return res.status(200).json({
+    data: user,
+  });
 });
