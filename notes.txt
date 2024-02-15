@@ -2,4 +2,4 @@ find -> return an array
 findById -> object
 CRUD -> Create,Read,Update,Delete
 
-model -> controller -> routes -> main(server.js)(import)
+model(schema) -> controller(logic function) -> routes(entry points/end point) -> main(server.js)(import)

@@ -9,7 +9,7 @@ const port = 3001;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
+ // mongodb+srv://deepank:<password>@cluster0.wopim.mongodb.net/?retryWrites=true&w=majority
 mongoose.connect(
   'mongodb+srv://suresh123:suresh123@cluster0.hhlk7.mongodb.net/nodejs?retryWrites=true&w=majority'
 );
@@ -186,7 +186,9 @@ app.get('/user/condition', async (req, res) => {
   //   });
   // }
   console.log(req.query);
-  const users = await User.find(condition);
+  const users = await User.find({
+    city: 'Aligarh',
+  });
   if (users.length === 0) {
     return res.status(400).json({
       message: 'No user found',
@@ -199,6 +201,7 @@ app.get('/user/condition', async (req, res) => {
 
 app.get('/user/:id', async (req, res) => {
   const { id } = req.params;
+
   const user = await User.findById(id);
   return res.status(200).json({
     data: user,
@@ -216,15 +219,17 @@ app.get('/user/one/:city', async (req, res) => {
 app.put('/user/update/:city', async (req, res) => {
   const { city } = req.params;
   const { username } = req.body;
-  const user = await User.findOneAndUpdate(
+  //1 condition
+  const user = await User.updateMany(
     {
-      city,
+      city, //condition
     },
     {
-      username,
+      username, //updated data
     },
     {
-      new: true,
+      new: true, //optional
+      runValidators: true,
     }
   );
   return res.status(200).json({
@@ -252,7 +257,7 @@ app.put('/user/update/:city', async (req, res) => {
 
 app.delete('/user/delete/:id', async (req, res) => {
   const { id } = req.params;
-  const user = await User.findByIdAndDelete(id);
+  const user = await User.deleteMany(id);
   return res.status(200).json({
     data: user,
   });

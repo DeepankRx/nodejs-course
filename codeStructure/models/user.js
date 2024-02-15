@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minLength: 8,
+      select: false, // Hide the password field in responses (used for security)
     },
     name: {
       type: String,
