@@ -13,6 +13,7 @@ app.listen(port, () => {
 mongoose.connect(
   'mongodb+srv://suresh123:suresh123@cluster0.hhlk7.mongodb.net/nodejs?retryWrites=true&w=majority'
 );
+
 mongoose.connection.on('open', () => console.log('Connected to db'));
 mongoose.connection.on('error', (err) => {
   console.log(err);
